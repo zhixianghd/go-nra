@@ -20,7 +20,7 @@ type BizError struct {
 }
 
 func (e *BizError) Error() string {
-	return fmt.Sprintf("nra error: code=(%d) args=(%+v)", e.code, e.args)
+	return fmt.Sprintf("BizError: code=(%d) args=(%+v)", e.code, e.args)
 }
 
 func (e *BizError) GetCode() int {
