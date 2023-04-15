@@ -62,25 +62,25 @@ func responseSuccess[Rsp interface{}](context *gin.Context, rsp *Rsp) {
 	context.JSON(http.StatusOK, rsp)
 }
 
-func responseError(context *gin.Context, error error, nraError *BizError) {
+func responseError(context *gin.Context, error error, bizError *BizError) {
 	source := getSource(context)
-	code := nraError.GetCode()
+	code := bizError.GetCode()
 
 	context.Header(GlobalConfig.ProtocolFields.Version, strconv.Itoa(VersionCurrent))
 	context.Header(GlobalConfig.ProtocolFields.Source, source)
 	context.Header(GlobalConfig.ProtocolFields.Code, strconv.Itoa(code))
 
-	if nraError.HasNotice() {
-		context.Header(GlobalConfig.ProtocolFields.Notice, url.QueryEscape(nraError.GetNotice()))
+	if bizError.HasNotice() {
+		context.Header(GlobalConfig.ProtocolFields.Notice, url.QueryEscape(bizError.GetNotice()))
 	}
 
-	if nraError.HasRetry() {
+	if bizError.HasRetry() {
 		context.Header(GlobalConfig.ProtocolFields.Retry, "1")
 	}
 
 	var reason string
 	if GlobalConfig.ExposeErrorReason {
-		reason = nraError.GetReason()
+		reason = bizError.GetReason()
 	}
 
 	var traces []*ErrorTraceDto = nil
