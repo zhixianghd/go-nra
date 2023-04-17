@@ -10,8 +10,8 @@ type Config struct {
 
 type ProtocolFieldsConfig struct {
 	Version string
-	Source  string
 	Code    string
+	Source  string
 	Notice  string
 	Retry   string
 }
@@ -23,8 +23,8 @@ var GlobalConfig = &Config{
 	ExposeErrorTraces: false,
 	ProtocolFields: &ProtocolFieldsConfig{
 		Version: "Nra-Version",
-		Source:  "Nra-Source",
 		Code:    "Nra-Code",
+		Source:  "Nra-Source",
 		Notice:  "Nra-Notice",
 		Retry:   "Nra-Retry",
 	},

@@ -1,8 +1,8 @@
 package nra
 
 type ErrorRsp struct {
-	Source string           `json:"source,omitempty"`
 	Code   int              `json:"code,omitempty"`
+	Source string           `json:"source,omitempty"`
 	Reason string           `json:"reason,omitempty"`
 	Traces []*ErrorTraceDto `json:"traces,omitempty"`
 }

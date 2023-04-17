@@ -67,8 +67,8 @@ func responseError(context *gin.Context, error error, nraError *Error) {
 	code := nraError.GetCode()
 
 	context.Header(GlobalConfig.ProtocolFields.Version, strconv.Itoa(VersionCurrent))
-	context.Header(GlobalConfig.ProtocolFields.Source, source)
 	context.Header(GlobalConfig.ProtocolFields.Code, strconv.Itoa(code))
+	context.Header(GlobalConfig.ProtocolFields.Source, source)
 
 	if nraError.HasNotice() {
 		context.Header(GlobalConfig.ProtocolFields.Notice, url.QueryEscape(nraError.GetNotice()))
@@ -88,7 +88,7 @@ func responseError(context *gin.Context, error error, nraError *Error) {
 		traces = getTraces(source, error)
 	}
 
-	responseErrorBody(context, http.StatusOK, source, code, reason, traces)
+	responseErrorBody(context, http.StatusOK, code, source, reason, traces)
 }
 
 func responseOtherError(context *gin.Context, error error, status int) {
@@ -104,14 +104,14 @@ func responseOtherError(context *gin.Context, error error, status int) {
 		traces = getTraces(source, error)
 	}
 
-	responseErrorBody(context, status, source, CodeNone, reason, traces)
+	responseErrorBody(context, status, CodeNone, source, reason, traces)
 }
 
-func responseErrorBody(context *gin.Context, status int, source string, code int, reason string, traces []*ErrorTraceDto) {
+func responseErrorBody(context *gin.Context, status int, code int, source string, reason string, traces []*ErrorTraceDto) {
 	if reason != "" || traces != nil {
 		context.JSON(status, &ErrorRsp{
-			Source: source,
 			Code:   code,
+			Source: source,
 			Reason: reason,
 			Traces: traces,
 		})
