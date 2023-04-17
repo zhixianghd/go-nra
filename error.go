@@ -15,12 +15,12 @@ type ErrorDefinition struct {
 
 type Error struct {
 	code       int
-	args       []any
+	extras     []any
 	definition *ErrorDefinition
 }
 
 func (e *Error) Error() string {
-	return fmt.Sprintf("nra.Error: code=(%d) args=(%+v)", e.code, e.args)
+	return fmt.Sprintf("nra.Error: code=(%d) extras=(%+v)", e.code, e.extras)
 }
 
 func (e *Error) GetCode() int {
@@ -32,9 +32,9 @@ func (e *Error) GetCode() int {
 
 func (e *Error) GetReason() string {
 	if e.definition != nil {
-		return fmt.Sprintf(e.definition.Reason, e.args...)
+		return fmt.Sprintf(e.definition.Reason, e.extras...)
 	}
-	return fmt.Sprintf("undefined " + e.Error())
+	return fmt.Sprintf("undefined error: code=(%d) extras=(%+v)", e.code, e.extras)
 }
 
 func (e *Error) HasNotice() bool {
@@ -60,8 +60,8 @@ func (c ErrorCreator) Text(text string, cause error) error {
 
 func (c ErrorCreator) Code(code int, cause error, args ...any) error {
 	return errors.Join(&Error{
-		code: code,
-		args: args,
+		code:   code,
+		extras: args,
 	}, cause)
 }
 
