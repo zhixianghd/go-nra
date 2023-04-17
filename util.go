@@ -5,19 +5,20 @@ import (
 	"strings"
 )
 
-func getSource(context *gin.Context) string {
-	uri := context.Request.RequestURI
-	if GlobalConfig.BaseUri != "" && strings.HasPrefix(uri, GlobalConfig.BaseUri) {
-		uri = uri[len(GlobalConfig.BaseUri):]
+func getEndpoint(context *gin.Context) string {
+	endpoint := context.Request.RequestURI
+	if GlobalConfig.BaseUri != "" && strings.HasPrefix(endpoint, GlobalConfig.BaseUri) {
+		endpoint = endpoint[len(GlobalConfig.BaseUri):]
 	}
-	return GlobalConfig.Service + ":" + uri
+	return endpoint
 }
 
-func getTraces(source string, error error) []*ErrorTraceDto {
+func getTraces(service string, endpoint string, error error) []*ErrorTraceDto {
 	var traces []*ErrorTraceDto
 	traces = append(traces, &ErrorTraceDto{
-		Source:  source,
-		Details: error.Error(),
+		Service:  service,
+		Endpoint: endpoint,
+		Details:  error.Error(),
 	})
 	return traces
 }

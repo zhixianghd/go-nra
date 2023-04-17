@@ -1,13 +1,15 @@
 package nra
 
 type ErrorRsp struct {
-	Code   int              `json:"code,omitempty"`
-	Source string           `json:"source,omitempty"`
-	Reason string           `json:"reason,omitempty"`
-	Traces []*ErrorTraceDto `json:"traces,omitempty"`
+	Code     int              `json:"code,omitempty"`
+	Service  string           `json:"service,omitempty"`
+	Endpoint string           `json:"endpoint,omitempty"`
+	Reason   string           `json:"reason,omitempty"`
+	Traces   []*ErrorTraceDto `json:"traces,omitempty"`
 }
 
 type ErrorTraceDto struct {
-	Source  string `json:"source,omitempty"`
-	Details string `json:"details,omitempty"`
+	Service  string `json:"service,omitempty"`
+	Endpoint string `json:"endpoint,omitempty"`
+	Details  string `json:"details,omitempty"`
 }
