@@ -13,42 +13,42 @@ type ErrorDefinition struct {
 	Loggable bool
 }
 
-type BizError struct {
+type Error struct {
 	code       int
 	args       []any
 	definition *ErrorDefinition
 }
 
-func (e *BizError) Error() string {
-	return fmt.Sprintf("BizError: code=(%d) args=(%+v)", e.code, e.args)
+func (e *Error) Error() string {
+	return fmt.Sprintf("nra.Error: code=(%d) args=(%+v)", e.code, e.args)
 }
 
-func (e *BizError) GetCode() int {
+func (e *Error) GetCode() int {
 	if e.definition != nil {
 		return e.code
 	}
 	return CodeUndefined
 }
 
-func (e *BizError) GetReason() string {
+func (e *Error) GetReason() string {
 	if e.definition != nil {
 		return fmt.Sprintf(e.definition.Reason, e.args...)
 	}
 	return fmt.Sprintf("undefined " + e.Error())
 }
 
-func (e *BizError) HasNotice() bool {
+func (e *Error) HasNotice() bool {
 	return e.definition != nil && e.definition.Notice != ""
 }
 
-func (e *BizError) GetNotice() string {
+func (e *Error) GetNotice() string {
 	if e.HasNotice() {
 		return e.definition.Notice
 	}
 	return ""
 }
 
-func (e *BizError) HasRetry() bool {
+func (e *Error) HasRetry() bool {
 	return e.definition != nil && e.definition.Retry
 }
 
@@ -59,7 +59,7 @@ func (c ErrorCreator) Text(text string, cause error) error {
 }
 
 func (c ErrorCreator) Code(code int, cause error, args ...any) error {
-	return errors.Join(&BizError{
+	return errors.Join(&Error{
 		code: code,
 		args: args,
 	}, cause)

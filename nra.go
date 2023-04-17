@@ -36,16 +36,16 @@ func processRequest[Req interface{}, Rsp interface{}](context *gin.Context, defi
 		responseOtherError(context, err, http.StatusBadRequest)
 	} else {
 		if rsp, err := definition.Handler(req); err != nil {
-			var bizError *BizError
-			if ok := errors.As(err, &bizError); ok {
-				if errorDefinition, ok := definition.Errors[bizError.code]; ok {
-					bizError.definition = errorDefinition
+			var nraError *Error
+			if ok := errors.As(err, &nraError); ok {
+				if errorDefinition, ok := definition.Errors[nraError.code]; ok {
+					nraError.definition = errorDefinition
 					// TODO: log errorDefinition.loggable is true
 					// TODO: alarm errorDefinition.alarm is true
-					responseError(context, err, bizError)
+					responseError(context, err, nraError)
 				} else {
 					// TODO: log undefined error
-					responseError(context, err, bizError)
+					responseError(context, err, nraError)
 				}
 			} else {
 				// TODO: log unknown error
@@ -62,25 +62,25 @@ func responseSuccess[Rsp interface{}](context *gin.Context, rsp *Rsp) {
 	context.JSON(http.StatusOK, rsp)
 }
 
-func responseError(context *gin.Context, error error, bizError *BizError) {
+func responseError(context *gin.Context, error error, nraError *Error) {
 	source := getSource(context)
-	code := bizError.GetCode()
+	code := nraError.GetCode()
 
 	context.Header(GlobalConfig.ProtocolFields.Version, strconv.Itoa(VersionCurrent))
 	context.Header(GlobalConfig.ProtocolFields.Source, source)
 	context.Header(GlobalConfig.ProtocolFields.Code, strconv.Itoa(code))
 
-	if bizError.HasNotice() {
-		context.Header(GlobalConfig.ProtocolFields.Notice, url.QueryEscape(bizError.GetNotice()))
+	if nraError.HasNotice() {
+		context.Header(GlobalConfig.ProtocolFields.Notice, url.QueryEscape(nraError.GetNotice()))
 	}
 
-	if bizError.HasRetry() {
+	if nraError.HasRetry() {
 		context.Header(GlobalConfig.ProtocolFields.Retry, "1")
 	}
 
 	var reason string
 	if GlobalConfig.ExposeErrorReason {
-		reason = bizError.GetReason()
+		reason = nraError.GetReason()
 	}
 
 	var traces []*ErrorTraceDto = nil
