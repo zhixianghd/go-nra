@@ -1,4 +1,4 @@
-module go-nra
+module github.com/zhixianghd/go-nra
 
 go 1.20
 
